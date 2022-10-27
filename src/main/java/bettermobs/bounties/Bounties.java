@@ -32,10 +32,6 @@ public final class Bounties extends JavaPlugin implements Listener {
     @EventHandler
 
     public void onCommand(PlayerCommandSendEvent event){
-        Player player = event.getPlayer();
-        Collection<String> command = event.getCommands();
-        if (command.contains(command_prefix)){
-            player.sendMessage("Elo");
-        }
+
     }
 }
