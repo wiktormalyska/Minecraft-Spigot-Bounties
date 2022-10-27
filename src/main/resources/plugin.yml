@@ -5,3 +5,8 @@ api-version: 1.19
 authors: [ bettermobs ]
 description: Plugin that adds bounties for making certain quests
 website: https://discord.gg/Y9BbesGwXa
+commands:
+  bounties:
+    description: Show info
+    permission: bounties
+    usage: /<command>
