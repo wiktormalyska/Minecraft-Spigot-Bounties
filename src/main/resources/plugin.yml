@@ -6,7 +6,11 @@ authors: [ bettermobs ]
 description: Plugin that adds bounties for making certain quests
 website: https://discord.gg/Y9BbesGwXa
 commands:
-  bounties:
+  bainfo:
     description: Show info
-    permission: bounties
+    permission: bounties.info
+    usage: /<command>
+  bagui:
+    description: Show GUI
+    permission: bounties.gui
     usage: /<command>

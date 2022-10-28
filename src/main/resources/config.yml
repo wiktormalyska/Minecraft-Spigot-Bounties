@@ -1,0 +1,11 @@
+bounties:
+  items:
+#   List of items that can be requested
+    requested:
+      - IRON_INGOT
+      - GOLD_INGOT
+
+#   List of items that can be used as a reward
+    rewards:
+      - DIAMOND
+      - DIRT
