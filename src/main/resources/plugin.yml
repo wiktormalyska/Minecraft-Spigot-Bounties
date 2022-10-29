@@ -3,14 +3,14 @@ version: '${project.version}'
 main: bettermobs.bounties.Bounties
 api-version: 1.19
 authors: [ bettermobs ]
-description: Plugin that adds bounties for making certain quests
+description: This plugin adds bounties system
 website: https://discord.gg/Y9BbesGwXa
 commands:
-  bainfo:
+  boinfo:
     description: Show info
     permission: bounties.info
     usage: /<command>
-  bagui:
-    description: Show GUI
-    permission: bounties.gui
+  boopen:
+    description: Open bounties menu
+    permission: bounties.open
     usage: /<command>

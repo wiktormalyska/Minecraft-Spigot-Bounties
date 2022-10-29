@@ -9,3 +9,5 @@ bounties:
     rewards:
       - DIAMOND
       - DIRT
+  menu:
+    title: "Bounties"

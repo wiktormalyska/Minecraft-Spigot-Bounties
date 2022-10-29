@@ -1,28 +1,24 @@
 package bettermobs.bounties;
 
-import bettermobs.bounties.gui.gui;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.block.data.type.Switch;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.bukkit.inventory.Inventory;
+import bettermobs.bounties.commands.info;
+import bettermobs.bounties.commands.open;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.Reader;
-
-public final class Bounties extends JavaPlugin implements Listener {
-
-PluginDescriptionFile plugin_desc = this.getDescription();
+public final class Bounties extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
         getConfig().options().copyDefaults();
-        this.saveDefaultConfig();
+        saveDefaultConfig();
+
+        PluginDescriptionFile description_file = this.getDescription();
+        String [] requested_items = getConfig().getStringList("bounties.items.requested").toArray(new String[0]);
+        String [] rewards = getConfig().getStringList("bounties.items.rewards").toArray(new String[0]);
+        String title = getConfig().getString("bounties.menu.title");
+
+        getCommand("boinfo").setExecutor(new info(description_file));
+        getCommand("boopen").setExecutor(new open(requested_items, rewards, title));
         System.out.println("Started successfully!");
     }
 
@@ -33,19 +29,6 @@ PluginDescriptionFile plugin_desc = this.getDescription();
 
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
-        String commands_prefix =""+ChatColor.DARK_GREEN+ChatColor.BOLD+"Bounties"+ChatColor.GRAY+ChatColor.BOLD+" | ";
 
-        if(command.getName().equalsIgnoreCase("bainfo") && sender instanceof Player){
-            sender.sendMessage(commands_prefix+"\n"+ChatColor.AQUA+ChatColor.BOLD+"Version: "+ChatColor.DARK_GREEN+plugin_desc.getVersion());
-        }
-        if(command.getName().equalsIgnoreCase("bagui") && sender instanceof Player){
-            sender.sendMessage(commands_prefix+"Opening gui...");
-            gui inventory = new gui();
-            ((Player) sender).openInventory(inventory.gui);
-        }
 
-        return true;
     }
-}
