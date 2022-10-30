@@ -2,12 +2,22 @@ bounties:
   items:
 #   List of items that can be requested
     requested:
-      - IRON_INGOT
-      - GOLD_INGOT
+      item1:
+        material: IRON_INGOT
+        amount: 6
+        slot: 1
+        reward:
+          material: DIRT
+          amount: 3
+
+      item2:
+        material: GOLD_INGOT
+        amount: 6
+        slot: 2
+        reward:
+          material: STONE
+          amount: 2
 
 #   List of items that can be used as a reward
-    rewards:
-      - DIAMOND
-      - DIRT
   menu:
     title: "[Bounties]"

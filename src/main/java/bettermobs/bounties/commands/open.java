@@ -9,53 +9,57 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import java.util.Arrays;
+import org.bukkit.plugin.Plugin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class open implements CommandExecutor {
     String [] req_items;
-    String [] rew_items;
     String menu_title;
-    public open(String[] requested_items, String[] rewards, String title) {
+    Plugin plugin;
+    public open(String[] requested_items, String title, Plugin plug) {
         req_items = requested_items;
-        rew_items = rewards;
         menu_title = ""+ ChatColor.DARK_RED + ChatColor.BOLD +title;
+        plugin = plug;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player && sender.hasPermission("bounties.open")){
+            sender.sendMessage("§4&l[Bounties] Opening menu...");
             Inventory inventory = Bukkit.createInventory((Player) sender, 54, menu_title);
-            for(int i = 0; i< req_items.length;i++) {
-                int slot = i;
-                if (i>35){
-                continue;
-                }
-                try {
-                inventory.setItem(slot,createGuiItem(Material.valueOf(req_items[i]), ""+ChatColor.DARK_GREEN+ChatColor.BOLD+"Requested item: "+req_items[i],""+ChatColor.DARK_AQUA+ChatColor.BOLD+"Reward: "+rew_items[(int)(Math.random() * rew_items.length)], ""+ChatColor.DARK_GRAY+"(Click to give item)"));
+            List<ItemStack> requested_items_list = new ArrayList<ItemStack>();
+            List<Integer> slots = new ArrayList<Integer>();
 
-                } catch (Exception e){
-                    sender.sendMessage("There is item provided that is not valid in config");
-                    System.out.println(e.getMessage());
-                }
-
+            // Add items to lists
+            for(int i = 0;i<req_items.length;i++) {
+                String material = plugin.getConfig().getString("bounties.items.requested." + req_items[i]+".material");
+                int amount = plugin.getConfig().getInt("bounties.items.requested." + req_items[i]+".amount");
+                String reward_material = plugin.getConfig().getString("bounties.items.requested."+req_items[i]+".reward.material");
+                int reward_amount = plugin.getConfig().getInt("bounties.items.requested." + req_items[i]+".reward.amount");
+                int slot = plugin.getConfig().getInt("bounties.items.requested." + req_items[i]+".slot");
+                ItemStack item_requested = new ItemStack(Material.valueOf(material),amount);
+                ItemMeta item_requestes_meta = item_requested.getItemMeta();
+                ArrayList<String> item_requested_lore = new ArrayList<>();
+                item_requested_lore.add("§2§lPrize: §a"+reward_amount+"x "+reward_material);
+                item_requested_lore.add("§7§o(Click to redeem)");
+                item_requestes_meta.setLore(item_requested_lore);
+                item_requestes_meta.setDisplayName("§3§lRequested: §a"+material);
+                item_requested.setItemMeta(item_requestes_meta);
+                requested_items_list.add(item_requested);
+                slots.add(slot);
+                System.out.println(material+amount+"\t"+reward_material+reward_amount+"\t"+slot);
             }
+            // Add lists to inventory
+            for (int i = 0;i<requested_items_list.toArray().length;i++){
+                inventory.setItem(slots.get(i),requested_items_list.get(i));
+            }
+            // Show inventory
             ((Player) sender).openInventory(inventory);
+        } else{
+            sender.sendMessage("§4&l[Bounties] You do not have permission: bounties.open");
         }
         return true;
-        }
-
-    protected ItemStack createGuiItem(final Material material, final String name, final String... lore) {
-        final ItemStack item = new ItemStack(material, 1);
-        final ItemMeta meta = item.getItemMeta();
-
-        // Set the name of the item
-        meta.setDisplayName(name);
-
-        // Set the lore of the item
-        meta.setLore(Arrays.asList(lore));
-
-        item.setItemMeta(meta);
-
-        return item;
     }
-    }
+}
