@@ -1,7 +1,6 @@
 package bettermobs.bounties.commands;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,7 +18,7 @@ public class open implements CommandExecutor {
     public open(String[] requested_items, String[] rewards, String title) {
         req_items = requested_items;
         rew_items = rewards;
-        menu_title = ""+ ChatColor.RED + ChatColor.BOLD + title;
+        menu_title = ""+ ChatColor.DARK_RED + ChatColor.BOLD +title;
     }
 
     @Override
@@ -29,13 +28,18 @@ public class open implements CommandExecutor {
             for(int i = 0; i< req_items.length;i++) {
                 int slot = i;
                 if (i>35){
-                slot = i;
                 continue;
                 }
-                inventory.setItem(slot,createGuiItem(Material.valueOf(req_items[i]), "Requested item: "+req_items[i],"Reward: "+rew_items[(int)(Math.random() * rew_items.length)]));
-                ((Player) sender).openInventory(inventory);
-            }
+                try {
+                inventory.setItem(slot,createGuiItem(Material.valueOf(req_items[i]), ""+ChatColor.DARK_GREEN+ChatColor.BOLD+"Requested item: "+req_items[i],""+ChatColor.DARK_AQUA+ChatColor.BOLD+"Reward: "+rew_items[(int)(Math.random() * rew_items.length)], ""+ChatColor.DARK_GRAY+"(Click to give item)"));
 
+                } catch (Exception e){
+                    sender.sendMessage("There is item provided that is not valid in config");
+                    System.out.println(e.getMessage());
+                }
+
+            }
+            ((Player) sender).openInventory(inventory);
         }
         return true;
         }
