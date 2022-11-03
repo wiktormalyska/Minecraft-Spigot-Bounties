@@ -4,6 +4,7 @@ bounties:
     requested:
 #   Example Item:
 #      item1:     <- Item name. Cannot be repeated in config
+#        enabled: true     <- If true, item is enabled
 #        removable: true      <- Defines if after redeeming offer gets removed
 #        material: IRON_INGOT       <- ID of item that is needed to redeem prize
 #        amount: 6        <- Amount of required item
@@ -12,6 +13,7 @@ bounties:
 #          material: DIRT       <- ID of prize item
 #          amount: 3          <- Amount of prize reward
       item1:
+        enabled: true
         removable: true
         material: IRON_INGOT
         amount: 6
@@ -21,6 +23,7 @@ bounties:
           amount: 3
 
       item2:
+        enabled: true
         removable: false
         material: GOLD_INGOT
         amount: 6

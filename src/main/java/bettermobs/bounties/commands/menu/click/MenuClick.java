@@ -1,5 +1,6 @@
 package bettermobs.bounties.commands.menu.click;
 
+import bettermobs.bounties.commands.open;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -35,7 +36,6 @@ public class MenuClick implements Listener {
             List<String> lore = event.getCurrentItem().getItemMeta().getLore();
             char prize_amount_char = lore.get(0).replace("§2§lPrize: §a","").charAt(0);
             int prize_amount = prize_amount_char-48;
-            System.out.println(lore.get(0)+"\t"+prize_amount);
             prize = lore.get(0).replace("§2§lPrize: §a"+prize_amount+"x ","");
             ItemStack reward = new ItemStack(Material.valueOf(prize),prize_amount);
             ItemMeta reward_meta = reward.getItemMeta();
@@ -43,9 +43,12 @@ public class MenuClick implements Listener {
             ItemStack item_stack = new ItemStack(Material.valueOf(item_name.replace("§2§l", "")),item_amount);
 
             if(event.getWhoClicked().getInventory().containsAtLeast(item_stack, item_amount)){
-                if(Objects.equals(lore.get(1), "§4§lOne time offer!")){
-                    //Remove item by slot lol
-                    //plugin.getConfig().set("bounties.items.requested.",null);
+                int current_slot = event.getSlot();
+                String name_of_equal_section_to_slot = open.name_of_section_with_the_same_slot(current_slot, requested_items, plugin);
+                List<String> lore2 = event.getCurrentItem().getItemMeta().getLore();
+                if(plugin.getConfig().getBoolean("bounties.items.requested."+name_of_equal_section_to_slot+".removable")){
+                    System.out.println("Item disabled!" + name_of_equal_section_to_slot);
+                    plugin.getConfig().set("bounties.items.requested."+name_of_equal_section_to_slot, null);
                 }
                 event.getWhoClicked().getInventory().addItem(reward);
                 event.getWhoClicked().getInventory().removeItem(item_stack);
