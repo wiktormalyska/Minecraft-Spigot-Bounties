@@ -1,9 +1,10 @@
 package bettermobs.bounties;
 
+import bettermobs.bounties.commands.add;
 import bettermobs.bounties.commands.info;
 import bettermobs.bounties.commands.menu.click.MenuClick;
 import bettermobs.bounties.commands.open;
-import org.bukkit.inventory.ItemStack;
+import bettermobs.bounties.commands.reload;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,13 +19,16 @@ public final class Bounties extends JavaPlugin {
         saveDefaultConfig();
 
         PluginDescriptionFile description_file = this.getDescription();
-        //Get object czy coś
         String [] requested_items = getConfig().getConfigurationSection("bounties.items.requested").getKeys(false).toArray(new String[0]);
         String title = getConfig().getString("bounties.menu.title");
+        List<Integer> taken_slots = open.taken_slots_list(this);
 
-        getServer().getPluginManager().registerEvents(new MenuClick(title, this, requested_items), this);
+
+        getServer().getPluginManager().registerEvents(new MenuClick(title, this), this);
         getCommand("boinfo").setExecutor(new info(description_file));
-        getCommand("boopen").setExecutor(new open(requested_items, title, this));
+        getCommand("boopen").setExecutor(new open( title, this));
+        getCommand("boreload").setExecutor(new reload(this));
+        getCommand("boadd").setExecutor(new add(this, taken_slots));
         System.out.println("Started successfully!");
     }
 

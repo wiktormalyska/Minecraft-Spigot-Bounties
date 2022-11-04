@@ -14,3 +14,11 @@ commands:
     description: Open bounties menu
     permission: bounties.open
     usage: /<command>
+  boreload:
+    description: Reloads config
+    permission: bounties.reload
+    usage: /<command>
+  boadd:
+    description: Adds held item to bounty system
+    permission: bounties.add
+    usage: /<command>

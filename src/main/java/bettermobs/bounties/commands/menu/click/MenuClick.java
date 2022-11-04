@@ -17,12 +17,10 @@ import java.util.Objects;
 
 public class MenuClick implements Listener {
     String item_name, prize, title;
-    String [] requested_items;
     Plugin plugin;
-    public MenuClick(String menu_title, Plugin plu, String [] req_items) {
+    public MenuClick(String menu_title, Plugin plu) {
         title = menu_title;
         plugin = plu;
-        requested_items = req_items;
     }
     String commands_prefix ="§4§l[Bounties] ";
     @EventHandler
@@ -31,6 +29,7 @@ public class MenuClick implements Listener {
             if(event.getCurrentItem()==null){
                 return;
             }
+            String [] requested_items = plugin.getConfig().getConfigurationSection("bounties.items.requested").getKeys(false).toArray(new String[0]);
             item_name = event.getCurrentItem().getItemMeta().getDisplayName().replace("§3§lRequested: §a","");
             int item_amount = event.getCurrentItem().getAmount();
             List<String> lore = event.getCurrentItem().getItemMeta().getLore();
@@ -44,11 +43,13 @@ public class MenuClick implements Listener {
 
             if(event.getWhoClicked().getInventory().containsAtLeast(item_stack, item_amount)){
                 int current_slot = event.getSlot();
-                String name_of_equal_section_to_slot = open.name_of_section_with_the_same_slot(current_slot, requested_items, plugin);
+                String name_of_equal_section_to_slot = open.name_of_section_with_the_same_slot(current_slot, plugin);
                 List<String> lore2 = event.getCurrentItem().getItemMeta().getLore();
                 if(plugin.getConfig().getBoolean("bounties.items.requested."+name_of_equal_section_to_slot+".removable")){
                     System.out.println("Item disabled!" + name_of_equal_section_to_slot);
                     plugin.getConfig().set("bounties.items.requested."+name_of_equal_section_to_slot, null);
+                    //save config
+                    plugin.saveConfig();
                 }
                 event.getWhoClicked().getInventory().addItem(reward);
                 event.getWhoClicked().getInventory().removeItem(item_stack);

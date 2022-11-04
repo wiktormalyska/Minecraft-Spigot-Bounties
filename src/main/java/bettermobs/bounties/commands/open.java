@@ -13,12 +13,12 @@ import org.bukkit.plugin.Plugin;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class open implements CommandExecutor {
-    String [] req_items;
     String menu_title;
     Plugin plugin;
-    public open(String[] requested_items, String title, Plugin plug) {
-        req_items = requested_items;
+
+    public open(String title, Plugin plug) {
         menu_title = "§4§l"+title;
         plugin = plug;
     }
@@ -26,13 +26,13 @@ public class open implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player && sender.hasPermission("bounties.open")) {
+            String [] requested_items = plugin.getConfig().getConfigurationSection("bounties.items.requested").getKeys(false).toArray(new String[0]);
             sender.sendMessage("§4§l[Bounties] §7Opening menu...");
             Inventory inventory = Bukkit.createInventory((Player) sender, 54, menu_title);
             List<ItemStack> requested_items_list = new ArrayList<ItemStack>();
             List<Integer> slots = new ArrayList<>();
-
             // Add items to lists
-            for (String req_item : req_items) {
+            for (String req_item : requested_items) {
                 if (plugin.getConfig().getBoolean("bounties.items.requested." + req_item + ".enabled")){
                     String material = plugin.getConfig().getString("bounties.items.requested." + req_item + ".material");
                     int amount = plugin.getConfig().getInt("bounties.items.requested." + req_item + ".amount");
@@ -45,6 +45,9 @@ public class open implements CommandExecutor {
                     item_requested_lore.add("§2§lPrize: §a" + reward_amount + "x " + reward_material);
                     if (!plugin.getConfig().getBoolean("bounties.items.requested." + req_item + ".removable")) {
                         item_requested_lore.add("§4§lUnlimited");
+                    }
+                    if (plugin.getConfig().getString("bounties.items.requested." + req_item + ".user")!=null){
+                        item_requested_lore.add("§2User: "+plugin.getConfig().getString("bounties.items.requested." + req_item + ".user"));
                     }
                     item_requested_lore.add("§7§o(Click to redeem)");
                     item_requested_meta.setLore(item_requested_lore);
@@ -65,7 +68,8 @@ public class open implements CommandExecutor {
         }
         return true;
     }
-    public static String name_of_section_with_the_same_slot(int slot, String [] req_items, Plugin plugin){
+    public static String name_of_section_with_the_same_slot(int slot, Plugin plugin){
+        String [] req_items = plugin.getConfig().getConfigurationSection("bounties.items.requested").getKeys(false).toArray(new String[0]);
         for (int i=0;i<req_items.length;i++){
             int item_slot = plugin.getConfig().getInt("bounties.items.requested."+req_items[i]+".slot");
             if (slot == item_slot){
@@ -73,5 +77,16 @@ public class open implements CommandExecutor {
             }
         }
         return null;
+    }
+
+    public static List<Integer> taken_slots_list(Plugin plugin){
+        String [] req_items = plugin.getConfig().getConfigurationSection("bounties.items.requested").getKeys(false).toArray(new String[0]);
+        List<Integer> taken_slots = new ArrayList<>();
+
+        for (String req_item : req_items){
+            int slot = plugin.getConfig().getInt("bounties.items.requested." + req_item + ".slot");
+            taken_slots.add(slot);
+        }
+        return taken_slots;
     }
 }
