@@ -4,12 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Marker;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class add implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] strings) {
         try {
             if (commandSender instanceof Player && commandSender.hasPermission("bounties.add")) {
                 List<String> materials = new ArrayList<>();
@@ -54,19 +53,19 @@ public class add implements CommandExecutor {
                             plugin.getConfig().set(path+".user",commandSender.getName());
 
                             ((Player) commandSender).getInventory().removeItem(((Player) commandSender).getInventory().getItemInMainHand());
-                            commandSender.sendMessage("§4§l[Bounties] §a§lAdded your items to Bounties!");
+                            commandSender.sendMessage("§4§l"+plugin.getConfig().getString("bounties.menu.title")+"§a§lAdded your items to Bounties!");
                         } else {
-                            commandSender.sendMessage("§4§l[Bounties] §7Provided argument is not material");
+                            commandSender.sendMessage("§4§l"+plugin.getConfig().getString("bounties.menu.title")+" §7Provided argument is not material");
                         }
                     } else {
-                        commandSender.sendMessage("§4§l[Bounties] §7You need to hold an item that you want to add to bounty");
+                        commandSender.sendMessage("§4§l"+plugin.getConfig().getString("bounties.menu.title")+" §7You need to hold an item that you want to add to bounty");
                     }
                 } else {
-                    commandSender.sendMessage("§4§l[Bounties] §7Not enough arguments: /boadd <requested_item> <amount>");
+                    commandSender.sendMessage("§4§l"+plugin.getConfig().getString("bounties.menu.title")+" §7Not enough arguments: /boadd <requested_item> <amount>");
                 }
             }
         } catch (Exception e){
-            commandSender.sendMessage("§4§l[Bounties] §7Not enough arguments: /boadd <requested_item> <amount>");
+            commandSender.sendMessage("§4§l"+plugin.getConfig().getString("bounties.menu.title")+" §7Not enough arguments: /boadd <requested_item> <amount>");
         }
         plugin.saveConfig();
         return true;

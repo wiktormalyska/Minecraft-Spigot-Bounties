@@ -35,3 +35,20 @@ bounties:
 #   List of items that can be used as a reward
   menu:
     title: "[Bounties]"
+
+# =======================================
+
+#   DO NOT CHANGE ANYTHING BELOW THIS LINE
+
+# =======================================
+
+
+
+
+
+
+  data:
+    item1:
+      material: STONE
+      amount: 2
+      user: example

@@ -1,9 +1,9 @@
 package bettermobs.bounties.commands.menu.click;
 
+import bettermobs.bounties.commands.on.player.join.OnPlayerJoin;
 import bettermobs.bounties.commands.open;
-import org.bukkit.ChatColor;
+import bettermobs.bounties.data.config_file;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,25 +11,24 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 
 public class MenuClick implements Listener {
-    String item_name, prize, title;
+    String item_name, prize;
     Plugin plugin;
-    public MenuClick(String menu_title, Plugin plu) {
-        title = menu_title;
+    public MenuClick(Plugin plu) {
         plugin = plu;
     }
-    String commands_prefix ="§4§l[Bounties] ";
+    String commands_prefix ="§4§l"+plugin.getConfig().getString("bounties.menu.title");
     @EventHandler
-    public void onMenuClick(InventoryClickEvent event){
+    public void onMenuClick(@NotNull InventoryClickEvent event){
+        String title = config_file.get_title(plugin);
         if (event.getView().getTitle().equalsIgnoreCase("§4§l"+title)){
             if(event.getCurrentItem()==null){
                 return;
             }
-            String [] requested_items = plugin.getConfig().getConfigurationSection("bounties.items.requested").getKeys(false).toArray(new String[0]);
             item_name = event.getCurrentItem().getItemMeta().getDisplayName().replace("§3§lRequested: §a","");
             int item_amount = event.getCurrentItem().getAmount();
             List<String> lore = event.getCurrentItem().getItemMeta().getLore();
@@ -46,7 +45,6 @@ public class MenuClick implements Listener {
                 String name_of_equal_section_to_slot = open.name_of_section_with_the_same_slot(current_slot, plugin);
                 List<String> lore2 = event.getCurrentItem().getItemMeta().getLore();
                 if(plugin.getConfig().getBoolean("bounties.items.requested."+name_of_equal_section_to_slot+".removable")){
-                    System.out.println("Item disabled!" + name_of_equal_section_to_slot);
                     plugin.getConfig().set("bounties.items.requested."+name_of_equal_section_to_slot, null);
                     //save config
                     plugin.saveConfig();
@@ -56,6 +54,19 @@ public class MenuClick implements Listener {
                 event.getWhoClicked().sendMessage(commands_prefix+"§2§lYou got an reward: §a"+prize_amount+"x "+prize+"!");
 
                 event.getWhoClicked().closeInventory();
+                if(event.getCurrentItem().getItemMeta().getLore().get(1).startsWith("§2User: ")) {
+                    String bounty_adder = reward.getItemMeta().getLore().get(1).replace("§2User: ", "");
+                    Player player_to_get_reward = null;
+                    if (plugin.getServer().getOnlinePlayers().contains(bounty_adder)) {
+                        player_to_get_reward = plugin.getServer().getPlayer(bounty_adder);
+                        player_to_get_reward.sendMessage("§4§l" + title + " &r&7You got  your requested item: " + event.getCurrentItem().getAmount() + "x" + event.getCurrentItem().getType());
+                        player_to_get_reward.getInventory().setItem(player_to_get_reward.getInventory().firstEmpty(), event.getCurrentItem());
+                    } else {
+                        plugin.getConfig().set("bounties.data." + event.getWhoClicked().getName() + event.getCurrentItem().getType() + ".material", event.getCurrentItem().getType());
+                        plugin.getConfig().set("bounties.data." + event.getWhoClicked().getName() + event.getCurrentItem().getType() + ".amount", event.getCurrentItem().getAmount());
+                        plugin.getConfig().set("bounties.data." + event.getWhoClicked().getName() + event.getCurrentItem().getType() + ".user", player_to_get_reward.getName());
+                    }
+                }
             } else {
                 event.getWhoClicked().closeInventory();
                 event.getWhoClicked().sendMessage(commands_prefix+"§c§lNot enough item: §a"+item_amount+"x "+item_name);
