@@ -9,9 +9,8 @@ import bettermobs.bounties.commands.reload;
 import bettermobs.bounties.data.config_file;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public final class Bounties extends JavaPlugin {
     @Override
@@ -21,17 +20,16 @@ public final class Bounties extends JavaPlugin {
         saveDefaultConfig();
 
         PluginDescriptionFile description_file = this.getDescription();
-        String [] requested_items = config_file.get_requested_items(this);
         String title = config_file.get_title(this);
         List<Integer> taken_slots = open.taken_slots_list(this);
 
 
         getServer().getPluginManager().registerEvents(new MenuClick(this), this);
-        getCommand("boinfo").setExecutor(new info(description_file));
-        getCommand("boopen").setExecutor(new open( title, this));
-        getCommand("boreload").setExecutor(new reload(this));
-        getCommand("boadd").setExecutor(new add(this, taken_slots));
-        getServer().getPluginManager().registerEvents(new OnPlayerJoin(), this);
+        Objects.requireNonNull(getCommand("boinfo")).setExecutor(new info(description_file));
+        Objects.requireNonNull(getCommand("boopen")).setExecutor(new open( title, this));
+        Objects.requireNonNull(getCommand("boreload")).setExecutor(new reload(this));
+        Objects.requireNonNull(getCommand("boadd")).setExecutor(new add(this, taken_slots));
+        getServer().getPluginManager().registerEvents(new OnPlayerJoin(this), this);
         System.out.println("Started successfully!");
     }
 

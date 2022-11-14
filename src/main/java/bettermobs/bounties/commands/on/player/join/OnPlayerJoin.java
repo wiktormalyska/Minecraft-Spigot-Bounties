@@ -1,5 +1,6 @@
 package bettermobs.bounties.commands.on.player.join;
 
+import bettermobs.bounties.Bounties;
 import bettermobs.bounties.data.config_file;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,9 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OnPlayerJoin implements Listener {
+Plugin plugin;
+
+    public OnPlayerJoin(Plugin plug) {
+        plugin = plug;
+    }
 
     @EventHandler
-    public void player_joined(@NotNull PlayerJoinEvent event, Plugin plugin){
+    public void player_joined(@NotNull PlayerJoinEvent event){
         if(users(plugin).contains(event.getPlayer().getName())){
             event.getPlayer().sendMessage("§4§l"+plugin.getConfig().getString("bounties.menu.title")+" §r§7Your items has been traded. Use §2§l/botake §r§7to take your items!");
         }

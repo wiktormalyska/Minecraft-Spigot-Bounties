@@ -1,5 +1,6 @@
 package bettermobs.bounties.commands;
 
+import bettermobs.bounties.data.stack_array;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,27 +34,31 @@ public class add implements CommandExecutor {
 
                     if(((Player) commandSender).getInventory().getItemInMainHand().getAmount() != 0) {
                         if (materials.contains(strings[0])) {
-                            String path = "bounties.items.requested." + commandSender.getName() + (int) (Math.random() * (1000));
-                            plugin.getConfig().set(path + ".enabled", true);
-                            plugin.getConfig().set(path + ".removable", true);
-                            plugin.getConfig().set(path + ".material", strings[0]);
-                            plugin.getConfig().set(path + ".amount", ((Player) commandSender).getInventory().getItemInMainHand().getAmount());
-                            int slot = 0;
-                            for (int i = 0; i <= 35; i++) {
-                                if (taken_slots.contains(i)) {
-                                    continue;
+                            if(stack_array.stack_array_list().contains(Integer.parseInt(strings[1]))) {
+                                String path = "bounties.items.requested." + commandSender.getName() + (int) (Math.random() * (1000));
+                                plugin.getConfig().set(path + ".enabled", true);
+                                plugin.getConfig().set(path + ".removable", true);
+                                plugin.getConfig().set(path + ".material", strings[0]);
+                                plugin.getConfig().set(path + ".amount", Integer.parseInt(strings[1]));
+                                int slot = 0;
+                                for (int i = 0; i <= 35; i++) {
+                                    if (taken_slots.contains(i)) {
+                                        continue;
+                                    }
+                                    slot = i;
+                                    break;
                                 }
-                                slot = i;
-                                break;
-                            }
-                            taken_slots.add(slot);
-                            plugin.getConfig().set(path + ".slot", slot);
-                            plugin.getConfig().set(path + ".reward.material", ((Player) commandSender).getInventory().getItemInMainHand().getType().toString());
-                            plugin.getConfig().set(path + ".reward.amount", Integer.valueOf(strings[1]));
-                            plugin.getConfig().set(path+".user",commandSender.getName());
+                                taken_slots.add(slot);
+                                plugin.getConfig().set(path + ".slot", slot);
+                                plugin.getConfig().set(path + ".reward.material", ((Player) commandSender).getInventory().getItemInMainHand().getType().toString());
+                                plugin.getConfig().set(path + ".reward.amount", ((Player) commandSender).getInventory().getItemInMainHand().getAmount());
+                                plugin.getConfig().set(path + ".user", commandSender.getName());
 
-                            ((Player) commandSender).getInventory().removeItem(((Player) commandSender).getInventory().getItemInMainHand());
-                            commandSender.sendMessage("§4§l"+plugin.getConfig().getString("bounties.menu.title")+"§a§lAdded your items to Bounties!");
+                                ((Player) commandSender).getInventory().removeItem(((Player) commandSender).getInventory().getItemInMainHand());
+                                commandSender.sendMessage("§4§l" + plugin.getConfig().getString("bounties.menu.title") + "§a§lAdded your items to Bounties!");
+                            } else{
+                                commandSender.sendMessage("§4§l"+plugin.getConfig().getString("bounties.menu.title")+" §7Provided argument is not number");
+                            }
                         } else {
                             commandSender.sendMessage("§4§l"+plugin.getConfig().getString("bounties.menu.title")+" §7Provided argument is not material");
                         }

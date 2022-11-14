@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class open implements CommandExecutor {
@@ -26,12 +27,12 @@ public class open implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        String [] requested_items = plugin.getConfig().getConfigurationSection("bounties.items.requested").getKeys(false).toArray(new String[0]);
         if (sender instanceof Player && sender.hasPermission("bounties.open")) {
-            String [] requested_items = plugin.getConfig().getConfigurationSection("bounties.items.requested").getKeys(false).toArray(new String[0]);
-            sender.sendMessage("§4§l"+plugin.getConfig().getString("bounties.menu.title")+"§7Opening menu...");
+            sender.sendMessage(menu_title+"§7Opening menu...");
             Inventory inventory = Bukkit.createInventory((Player) sender, 54, menu_title);
-            List<ItemStack> requested_items_list = new ArrayList<ItemStack>();
+            List<ItemStack> requested_items_list = new ArrayList<>();
             List<Integer> slots = new ArrayList<>();
             // Add items to lists
             for (String req_item : requested_items) {
@@ -66,27 +67,27 @@ public class open implements CommandExecutor {
             }
             ((Player) sender).openInventory(inventory);
         } else {
-            sender.sendMessage("§4§l"+plugin.getConfig().getString("bounties.menu.title")+" §7You do not have permission");
+            sender.sendMessage(menu_title+" §7You do not have permission");
         }
         return true;
     }
-    public static @Nullable String name_of_section_with_the_same_slot(int slot, @NotNull Plugin plugin){
-        String [] req_items = plugin.getConfig().getConfigurationSection("bounties.items.requested").getKeys(false).toArray(new String[0]);
-        for (int i=0;i<req_items.length;i++){
-            int item_slot = plugin.getConfig().getInt("bounties.items.requested."+req_items[i]+".slot");
-            if (slot == item_slot){
-                return req_items[i];
+    public static @Nullable String name_of_section_with_the_same_slot(int slot, @NotNull Plugin plgi){
+        String [] req_items = plgi.getConfig().getConfigurationSection("bounties.items.requested").getKeys(false).toArray(new String[0]);
+        for (String req_item : req_items) {
+            int item_slot = plgi.getConfig().getInt("bounties.items.requested." + req_item + ".slot");
+            if (slot == item_slot) {
+                return req_item;
             }
         }
         return null;
     }
 
-    public static @NotNull List<Integer> taken_slots_list(@NotNull Plugin plugin){
-        String [] req_items = plugin.getConfig().getConfigurationSection("bounties.items.requested").getKeys(false).toArray(new String[0]);
+    public static @NotNull List<Integer> taken_slots_list(@NotNull Plugin plgi){
+        String [] req_items = plgi.getConfig().getConfigurationSection("bounties.items.requested").getKeys(false).toArray(new String[0]);
         List<Integer> taken_slots = new ArrayList<>();
 
         for (String req_item : req_items){
-            int slot = plugin.getConfig().getInt("bounties.items.requested." + req_item + ".slot");
+            int slot = plgi.getConfig().getInt("bounties.items.requested." + req_item + ".slot");
             taken_slots.add(slot);
         }
         return taken_slots;
