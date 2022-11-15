@@ -1,6 +1,4 @@
 package bettermobs.bounties.commands.on.player.join;
-
-import bettermobs.bounties.Bounties;
 import bettermobs.bounties.data.config_file;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
