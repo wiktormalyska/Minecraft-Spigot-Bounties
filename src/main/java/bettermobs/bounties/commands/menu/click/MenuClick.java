@@ -60,8 +60,7 @@ public class MenuClick implements Listener {
 
                         if (event.getCurrentItem().getItemMeta().getLore().get(1).startsWith("§2User: ")) {
                             Player player_to_get_reward = plugin.getServer().getPlayer(bounty_adder);
-                            if (plugin.getServer().getOnlinePlayers().contains(plugin.getServer().getPlayer(bounty_adder))) {
-                                assert player_to_get_reward != null;
+                            if (!plugin.getServer().getPlayer(bounty_adder).isOnline()) {
                                 player_to_get_reward.sendMessage("§4§l" + title + " §r§7You got  your requested item: §r§a" + event.getCurrentItem().getAmount() + "x" + event.getCurrentItem().getType());
                                 player_to_get_reward.getInventory().setItem(player_to_get_reward.getInventory().firstEmpty(), new ItemStack(event.getCurrentItem().getType(), event.getCurrentItem().getAmount()));
                             } else {
