@@ -55,7 +55,7 @@ public class add implements CommandExecutor {
                                 plugin.getConfig().set(path + ".user", commandSender.getName());
 
                                 ((Player) commandSender).getInventory().removeItem(((Player) commandSender).getInventory().getItemInMainHand());
-                                commandSender.sendMessage("§4§l" + plugin.getConfig().getString("bounties.menu.title") + "§a§lAdded your items to Bounties!");
+                                commandSender.sendMessage("§4§l" + plugin.getConfig().getString("bounties.menu.title") + " §a§lAdded your items to Bounties!");
                             } else{
                                 commandSender.sendMessage("§4§l"+plugin.getConfig().getString("bounties.menu.title")+" §7Provided argument is not number");
                             }

@@ -56,17 +56,16 @@ public class MenuClick implements Listener {
                         }
                         event.getWhoClicked().getInventory().addItem(reward);
                         event.getWhoClicked().getInventory().removeItem(item_stack);
-                        event.getWhoClicked().sendMessage(commands_prefix + "§2§lYou got an reward: §a" + prize_amount + "x " + prize + "!");
+                        event.getWhoClicked().sendMessage(commands_prefix + " §2§lYou got an reward: §a" + prize_amount + "x " + prize + "!");
 
                         if (event.getCurrentItem().getItemMeta().getLore().get(1).startsWith("§2User: ")) {
                             Player player_to_get_reward = plugin.getServer().getPlayer(bounty_adder);
-                            if (!plugin.getServer().getPlayer(bounty_adder).isOnline()) {
-                                player_to_get_reward.sendMessage("§4§l" + title + " §r§7You got  your requested item: §r§a" + event.getCurrentItem().getAmount() + "x" + event.getCurrentItem().getType());
+                            if (plugin.getServer().getPlayer(bounty_adder).isOnline()) {
+                                player_to_get_reward.sendMessage("§4§l" + title + " §r§7You got your requested item: §r§a" + event.getCurrentItem().getAmount() + "x" + event.getCurrentItem().getType());
                                 player_to_get_reward.getInventory().setItem(player_to_get_reward.getInventory().firstEmpty(), new ItemStack(event.getCurrentItem().getType(), event.getCurrentItem().getAmount()));
                             } else {
-                                plugin.getConfig().set("bounties.data." + event.getWhoClicked().getName() + event.getCurrentItem().getType() + ".material", event.getCurrentItem().getType());
+                                plugin.getConfig().set("bounties.data." + event.getWhoClicked().getName() + event.getCurrentItem().getType() + ".material", (event.getCurrentItem().getType()).toString());
                                 plugin.getConfig().set("bounties.data." + event.getWhoClicked().getName() + event.getCurrentItem().getType() + ".amount", event.getCurrentItem().getAmount());
-                                assert player_to_get_reward != null;
                                 plugin.getConfig().set("bounties.data." + event.getWhoClicked().getName() + event.getCurrentItem().getType() + ".user", player_to_get_reward.getName());
                             }
 
