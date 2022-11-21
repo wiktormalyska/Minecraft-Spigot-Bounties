@@ -25,7 +25,6 @@ public class MenuClick implements Listener {
 
     @EventHandler
     public void onMenuClick(@NotNull InventoryClickEvent event){
-        String commands_prefix ="§4§l"+plugin.getConfig().getString("bounties.menu.title");
         String title = config_file.get_title(plugin);
         if (event.getView().getTitle().equalsIgnoreCase("§4§l"+title)) {
             event.setCancelled(true);
@@ -56,7 +55,7 @@ public class MenuClick implements Listener {
                         }
                         event.getWhoClicked().getInventory().addItem(reward);
                         event.getWhoClicked().getInventory().removeItem(item_stack);
-                        event.getWhoClicked().sendMessage(commands_prefix + " §2§lYou got an reward: §a" + prize_amount + "x " + prize + "!");
+                        event.getWhoClicked().sendMessage("§4§l" + title  + " §2§lYou got an reward: §a" + prize_amount + "x " + prize + "!");
 
                         if (event.getCurrentItem().getItemMeta().getLore().get(1).startsWith("§2User: ")) {
                             Player player_to_get_reward = plugin.getServer().getPlayer(bounty_adder);
@@ -64,16 +63,22 @@ public class MenuClick implements Listener {
                                 player_to_get_reward.sendMessage("§4§l" + title + " §r§7You got your requested item: §r§a" + event.getCurrentItem().getAmount() + "x" + event.getCurrentItem().getType());
                                 player_to_get_reward.getInventory().setItem(player_to_get_reward.getInventory().firstEmpty(), new ItemStack(event.getCurrentItem().getType(), event.getCurrentItem().getAmount()));
                             } else {
-                                plugin.getConfig().set("bounties.data." + event.getWhoClicked().getName() + event.getCurrentItem().getType() + ".material", (event.getCurrentItem().getType()).toString());
-                                plugin.getConfig().set("bounties.data." + event.getWhoClicked().getName() + event.getCurrentItem().getType() + ".amount", event.getCurrentItem().getAmount());
-                                plugin.getConfig().set("bounties.data." + event.getWhoClicked().getName() + event.getCurrentItem().getType() + ".user", player_to_get_reward.getName());
+
+                                event.getWhoClicked().sendMessage("§4§l" + title + " §r§7The player §r§a" + bounty_adder + " §r§7is offline!");
+                                String current_time = String.valueOf(System.currentTimeMillis());
+                                if(plugin.getConfig().getConfigurationSection("bounties.data."+bounty_adder) != null){
+                                    plugin.getConfig().createSection("bounties.data."+bounty_adder);
+                                }
+                                plugin.getConfig().set("bounties.data." + bounty_adder+"." + current_time+".material", (event.getCurrentItem().getType()).toString());
+                                plugin.getConfig().set("bounties.data." + bounty_adder+"." + current_time+".amount", (event.getCurrentItem().getAmount()));
+                                event.getWhoClicked().closeInventory();
                             }
 
                         }
                         event.getWhoClicked().closeInventory();
 
                     } else {
-                        event.getWhoClicked().sendMessage(commands_prefix + "§c§lNot enough item: §a" + item_amount + "x " + item_name);
+                        event.getWhoClicked().sendMessage("§4§l" + title + "§c§lNot enough item: §a" + item_amount + "x " + item_name);
                         event.getWhoClicked().closeInventory();
                     }
                     event.setCancelled(true);
