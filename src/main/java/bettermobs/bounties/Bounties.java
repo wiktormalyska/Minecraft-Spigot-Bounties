@@ -17,16 +17,16 @@ public final class Bounties extends JavaPlugin {
         saveDefaultConfig();
 
         PluginDescriptionFile description_file = this.getDescription();
-        String title = config_file.get_title(this);
+        String title = this.getConfig().getString("bounties.menu.title");
         List<Integer> taken_slots = open.taken_slots_list(this);
 
 
         getServer().getPluginManager().registerEvents(new MenuClick(this), this);
-        Objects.requireNonNull(getCommand("boinfo")).setExecutor(new info(description_file));
-        Objects.requireNonNull(getCommand("boopen")).setExecutor(new open( title, this));
-        Objects.requireNonNull(getCommand("boreload")).setExecutor(new reload(this));
-        Objects.requireNonNull(getCommand("boadd")).setExecutor(new add(this, taken_slots));
-        Objects.requireNonNull(getCommand("botake")).setExecutor(new take(this, title));
+        getCommand("boinfo").setExecutor(new info(description_file));
+        getCommand("boopen").setExecutor(new open( title, this));
+        getCommand("boreload").setExecutor(new reload(this));
+        getCommand("boadd").setExecutor(new add(this, taken_slots));
+        getCommand("botake").setExecutor(new take(this, title));
         //Objects.requireNonNull(getCommand("botake")).setExecutor(new take(this));
         getServer().getPluginManager().registerEvents(new OnPlayerJoin(this), this);
         System.out.println("Started successfully!");
