@@ -20,17 +20,22 @@ public class MenuClick implements Listener {
     Plugin plugin;
     public MenuClick(Plugin plu) {
         plugin = plu;
-
     }
 
     @EventHandler
     public void onMenuClick(@NotNull InventoryClickEvent event){
         String title = config_file.get_title(plugin);
+
+        //Check what inventory is clicked
         if (event.getView().getTitle().equalsIgnoreCase("§4§l"+title)) {
             try {
                 List<String> lore = event.getCurrentItem().getItemMeta().getLore();
                 String bounty_adder = lore.get(1).replace("§2User: ", "");
+
+                //Check if player is clicking on his own bounty
                 if (!event.getWhoClicked().getName().equals(bounty_adder)) {
+
+                    //Check if player is clicking item
                     if (event.getCurrentItem() == null) {
                         return;
                     }
@@ -44,52 +49,67 @@ public class MenuClick implements Listener {
                     reward.setItemMeta(reward_meta);
                     ItemStack item_stack = new ItemStack(Material.valueOf(item_name.replace("§2§l", "")), item_amount);
 
+                    // Check if player has required items
                     if (event.getWhoClicked().getInventory().containsAtLeast(item_stack, item_amount)) {
                         int current_slot = event.getSlot();
                         String name_of_equal_section_to_slot = open.name_of_section_with_the_same_slot(current_slot, plugin);
+
+                        // Check if item is removable
                         if (plugin.getConfig().getBoolean("bounties.items.requested." + name_of_equal_section_to_slot + ".removable")) {
                             plugin.getConfig().set("bounties.items.requested." + name_of_equal_section_to_slot, null);
-                            //save config
                             plugin.saveConfig();
                         }
+                        event.getWhoClicked().sendMessage("§4§l" + title  + " §2§lYou got an reward: §a" + prize_amount + "x " + prize + "!");
                         event.getWhoClicked().getInventory().addItem(reward);
                         event.getWhoClicked().getInventory().removeItem(item_stack);
-                        event.getWhoClicked().sendMessage("§4§l" + title  + " §2§lYou got an reward: §a" + prize_amount + "x " + prize + "!");
-
+                        
+                        // Check if item was published by player
                         if (event.getCurrentItem().getItemMeta().getLore().get(1).toLowerCase().contains("user:")) {
+                            event.getWhoClicked().sendMessage("§4§l" + title + " §2§lThis item was added by: §r§a" + bounty_adder);
                             Player player_to_get_reward = plugin.getServer().getPlayer(bounty_adder);
+
+                            // Check if publishing player is online
                             if (plugin.getServer().getPlayer(bounty_adder).isOnline()) {
+                                event.getWhoClicked().getInventory().addItem(reward);
+                                event.getWhoClicked().getInventory().removeItem(item_stack);
                                 player_to_get_reward.sendMessage("§4§l" + title + " §r§7You got your requested item: §r§a" + event.getCurrentItem().getAmount() + "x" + event.getCurrentItem().getType());
                                 player_to_get_reward.getInventory().setItem(player_to_get_reward.getInventory().firstEmpty(), new ItemStack(event.getCurrentItem().getType(), event.getCurrentItem().getAmount()));
                                 event.setCancelled(true);
-                                event.getWhoClicked().closeInventory();
+                                
                             } else {
                                 event.getWhoClicked().sendMessage("§4§l" + title + " §r§7The player §r§a" + bounty_adder + " §r§7is offline!");
                                 String current_time = String.valueOf(System.currentTimeMillis());
+
+                                // Check if player has offline rewards pending
                                 if(plugin.getConfig().getConfigurationSection("bounties.data."+bounty_adder) != null){
                                     plugin.getConfig().createSection("bounties.data."+bounty_adder);
                                 }
+                                event.getWhoClicked().getInventory().addItem(reward);
+                                event.getWhoClicked().getInventory().removeItem(item_stack);
                                 plugin.getConfig().set("bounties.data." + bounty_adder+"." + current_time+".material", (event.getCurrentItem().getType()).toString());
                                 plugin.getConfig().set("bounties.data." + bounty_adder+"." + current_time+".amount", (event.getCurrentItem().getAmount()));
                                 event.setCancelled(true);
-                                event.getWhoClicked().closeInventory();
+                                
                             }
                             event.setCancelled(true);
+                            Player player_to_open = (Player) event.getWhoClicked();
+                            event.getWhoClicked().closeInventory();
+                            player_to_open.performCommand("boopen");
                         }
                         event.setCancelled(true);
                     } else {
                         event.getWhoClicked().sendMessage("§4§l" + title + "§c§lNot enough item: §a" + item_amount + "x " + item_name);
                         event.setCancelled(true);
-                        event.getWhoClicked().closeInventory();
+                        
                     }
                     event.setCancelled(true);
                 } else {
                     event.getWhoClicked().sendMessage("§4§l" + title + "§r§7You cannot buy from yourself!");
                     event.setCancelled(true);
-                    event.getWhoClicked().closeInventory();
+                    
                 }
             }catch (Exception e){
-
+                event.setCancelled(true);
             }
         }
     }
