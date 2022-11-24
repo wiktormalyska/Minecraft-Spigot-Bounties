@@ -29,13 +29,13 @@ public final class Bounties extends JavaPlugin {
         getCommand("botake").setExecutor(new take(this, title));
         //Objects.requireNonNull(getCommand("botake")).setExecutor(new take(this));
         getServer().getPluginManager().registerEvents(new OnPlayerJoin(this), this);
-        System.out.println("Started successfully!");
+        this.getLogger().log(java.util.logging.Level.INFO, "Started successfully!");
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        System.out.println("Stopped!");
+        this.getLogger().log(java.util.logging.Level.INFO, "Stopped successfully!");
 
     }
 

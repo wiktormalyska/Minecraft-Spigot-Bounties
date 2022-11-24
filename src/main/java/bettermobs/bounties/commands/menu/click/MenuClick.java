@@ -69,14 +69,15 @@ public class MenuClick implements Listener {
                             Player player_to_get_reward = plugin.getServer().getPlayer(bounty_adder);
 
                             // Check if publishing player is online
-                            if (plugin.getServer().getPlayer(bounty_adder).isOnline()) {
+                            if (!plugin.getServer().getOnlinePlayers().contains(bounty_adder)) {
                                 event.getWhoClicked().getInventory().addItem(reward);
                                 event.getWhoClicked().getInventory().removeItem(item_stack);
                                 player_to_get_reward.sendMessage("§4§l" + title + " §r§7You got your requested item: §r§a" + event.getCurrentItem().getAmount() + "x" + event.getCurrentItem().getType());
                                 player_to_get_reward.getInventory().setItem(player_to_get_reward.getInventory().firstEmpty(), new ItemStack(event.getCurrentItem().getType(), event.getCurrentItem().getAmount()));
                                 event.setCancelled(true);
-                                
                             } else {
+                                event.getWhoClicked().getInventory().addItem(reward);
+                                event.getWhoClicked().getInventory().removeItem(item_stack);
                                 event.getWhoClicked().sendMessage("§4§l" + title + " §r§7The player §r§a" + bounty_adder + " §r§7is offline!");
                                 String current_time = String.valueOf(System.currentTimeMillis());
 
