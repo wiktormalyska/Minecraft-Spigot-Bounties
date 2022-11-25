@@ -16,9 +16,8 @@ import java.util.List;
 public class add implements CommandExecutor {
     Plugin plugin;
     List<Integer> taken_slots;
-    public add(Plugin plug, List<Integer> tkn_slots) {
+    public add(Plugin plug) {
         plugin = plug;
-        taken_slots = tkn_slots;
     }
 
     @Override
@@ -40,16 +39,6 @@ public class add implements CommandExecutor {
                                 plugin.getConfig().set(path + ".removable", true);
                                 plugin.getConfig().set(path + ".material", strings[0]);
                                 plugin.getConfig().set(path + ".amount", Integer.parseInt(strings[1]));
-                                int slot = 0;
-                                for (int i = 0; i <= 35; i++) {
-                                    if (taken_slots.contains(i)) {
-                                        continue;
-                                    }
-                                    slot = i;
-                                    break;
-                                }
-                                taken_slots.add(slot);
-                                plugin.getConfig().set(path + ".slot", slot);
                                 plugin.getConfig().set(path + ".reward.material", ((Player) commandSender).getInventory().getItemInMainHand().getType().toString());
                                 plugin.getConfig().set(path + ".reward.amount", ((Player) commandSender).getInventory().getItemInMainHand().getAmount());
                                 plugin.getConfig().set(path + ".user", commandSender.getName());

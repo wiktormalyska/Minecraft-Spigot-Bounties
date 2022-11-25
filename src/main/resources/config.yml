@@ -1,23 +1,22 @@
 bounties:
   items:
-#   List of items that can be requested
     requested:
+#############################################
 #   Example Item:
 #      item1:     <- Item name. Cannot be repeated in config
 #        enabled: true     <- If true, item is enabled
 #        removable: true      <- Defines if after redeeming offer gets removed
 #        material: IRON_INGOT       <- ID of item that is needed to redeem prize
 #        amount: 6        <- Amount of required item
-#        slot: 0         <- Slot where item will be located. If in config something has the same slot, it will be OVERRIDED
 #        reward:
 #          material: DIRT       <- ID of prize item
 #          amount: 3          <- Amount of prize reward
+#############################################
       item1:
         enabled: true
         removable: true
         material: IRON_INGOT
         amount: 6
-        slot: 0
         reward:
           material: DIRT
           amount: 3
@@ -27,7 +26,6 @@ bounties:
         removable: false
         material: GOLD_INGOT
         amount: 6
-        slot: 2
         reward:
           material: STONE
           amount: 2
@@ -36,17 +34,30 @@ bounties:
   menu:
     title: "[Bounties]"
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # =======================================
 
 #   DO NOT CHANGE ANYTHING BELOW THIS LINE
 
 # =======================================
-
-
-
-
-
-
   data:
     item1:
       material: STONE

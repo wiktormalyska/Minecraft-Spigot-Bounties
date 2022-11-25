@@ -27,6 +27,7 @@ public class take implements CommandExecutor {
             Map<String, List<ItemStack>> get_user_and_item = data.get_uandi_from_data(plugin, commandSender, prefix);
             try {
                 if (get_user_and_item.containsKey(commandSender.getName())) {
+                    commandSender.sendMessage("§4§l" + prefix + "§r§7You have received your items!");
                     for (int i = 0; i < get_user_and_item.get(commandSender.getName()).size(); i++) {
                         plugin.getServer().getPlayer(commandSender.getName()).getInventory().addItem(get_user_and_item.get(commandSender.getName()).get(i));
                     }
